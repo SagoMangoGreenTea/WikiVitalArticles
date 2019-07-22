@@ -1,0 +1,6 @@
+scrapy
+path
+glob
+syntok
+lxml
+*.pyc
