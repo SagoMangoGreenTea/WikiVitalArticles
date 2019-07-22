@@ -22,4 +22,16 @@ scrapy crawl WL4
 
 ## Post-processing articles
 
-The `postprocess.py` script segments and tags the articles for later use (e.g. for use in word embeddings). 
+The `postprocess.py` script segments and tags the articles for later use (e.g. for use in word embeddings).
+
+Execute the following in a terminal:
+
+```python
+python postprocess.py
+```
+
+Execute the following to view additional options
+
+```python
+python postprocess.py -h
+```
