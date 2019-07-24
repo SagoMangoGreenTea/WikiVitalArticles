@@ -1,4 +1,6 @@
 data
+data_L5
 .ropeproject
 WikiEssentials_L4.txt
+WikiEssentials_L4_only.txt
 *.pyc

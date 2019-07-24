@@ -20,6 +20,14 @@ Execute the following in a terminal:
 scrapy crawl WL4
 ```
 
+If you also want the expanded sections for businesspeople and business & economics from level 5, then execute:
+
+```python
+scrapy crawl WL5
+```
+
+as well. These sections will be downloaded in 'data_L5' folder. You should manually copy the files to the 'data' folder under the correct category before executing the post-processing script.
+
 ## Post-processing articles
 
 The `postprocess.py` script segments and tags the articles for later use (e.g. for use in word embeddings).
