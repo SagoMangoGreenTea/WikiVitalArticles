@@ -52,7 +52,7 @@ Society_and_social_sciences
 	Society_and_social_sciences/Politics_and_government	[==>]	75
 	Society_and_social_sciences/Society	[==>]	77
 	Society_and_social_sciences/Education	[==>]	62
-	Society_and_social_sciences/Business_and_economics	[==>]	115
+	Society_and_social_sciences/Business_and_economics	[==>]	548
 	Society_and_social_sciences/Anthropology	[==>]	6
 Mathematics
 	Mathematics/Calculus_and_analysis	[==>]	40
@@ -66,7 +66,7 @@ People
 	People/Directors,_producers_and_screenwriters	[==>]	59
 	People/Rebels,_revolutionaries_and_activists	[==>]	55
 	People/Journalists	[==>]	16
-	People/Businesspeople	[==>]	30
+	People/Businesspeople	[==>]	334
 	People/Philosophers,_historians,_political_and_social_scientists	[==>]	156
 	People/Visual_artists	[==>]	122
 	People/Musicians_and_composers	[==>]	156
