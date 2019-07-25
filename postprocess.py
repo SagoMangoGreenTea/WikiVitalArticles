@@ -60,17 +60,14 @@ def get_children(xml):
 
     return [e for e in xml.iterchildren() if not isinstance(e, html.HtmlComment)]
 
-def process_file(input_file):
+def process_file(input_file, verbose = False):
 
     """Read an input (html) file from disk and process to paragraph-size chunks"""
-    #input_file = "data/./Everyday_life/Sports_and_recreation/Stuffed_toy.html"
+
     # Create labels from file path
     labels = '+'.join(input_file.split("/")[2:4])
 
     # Open input file
-    #with open(input_file, "r") as f:
-    #    file_as_string = f.read()
-
     with input_file.open() as f:
         file_as_string = f.read()
 
@@ -92,9 +89,10 @@ def process_file(input_file):
         if len(" ".join(paragraph_new).split(" ")) > MIN_PARAGRAPH_TOKENS: paragraphs_new.append("".join(paragraph_new))
 
     # Print
-    if len(paragraphs_new) > 0:
-        print("\t[==>] Snippets: [{}]\n\t[==>] Sample: {}\n\t[==>] Length: {}\n".format(len(paragraphs_new), paragraphs_new[0],
-                                                                                  len(paragraphs_new[0].split(" "))))
+    if verbose:
+        if len(paragraphs_new) > 0:
+            print("\t[==>] Snippets: [{}]\n\t[==>] Sample: {}\n\t[==>] Length: {}\n".format(len(paragraphs_new), paragraphs_new[0],
+                                                                                      len(paragraphs_new[0].split(" "))))
 
     # Return
     return(paragraphs_new, labels)
@@ -110,10 +108,14 @@ if __name__ == "__main__":
     argparser.add_argument('-m', "--max_paragraphs",
                            help="Maximum number of paragraphs to process for an article",
                            required=False, type = int)
+    argparser.add_argument('-v', "--verbose",
+                           help="Print paragraph lengths, s paragraph sample and number of paragraphs per wikipedia article to the terminal",
+                           required=False, default = False, type = bool)
 
     # Retrieve arguments passed by user
     args = argparser.parse_args()
     mp = args.max_paragraphs
+    verbose = args.verbose
 
     # Check if data exists
     assert os.path.exists("data"), "Data not found. Run the scraper first (see README)"
@@ -133,7 +135,7 @@ if __name__ == "__main__":
             # Cat
             print(" Handling article: {} -- {}% complete".format(WikiArticle, round((k / n) * 100, 2)))
             # Process article
-            paragraphs, label = process_file(WikiArticle)
+            paragraphs, label = process_file(WikiArticle, verbose = verbose)
             # Write
             for i, paragraph in enumerate(paragraphs):
                 outFile.write("{}\t{}\t{}\n".format("DOC" + str(docnr), label, paragraph))
