@@ -44,7 +44,8 @@ class WikiEssentials_L5(scrapy.Spider):
         """Start scraping here"""
 
         urls = ["https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/People/Miscellaneous",
-                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Society_and_social_sciences"]
+                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Society_and_social_sciences",
+                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Philosophy_and_religion"]
 
         # Yield
         for url in urls:
@@ -54,6 +55,9 @@ class WikiEssentials_L5(scrapy.Spider):
             if url.endswith("sciences"):
                 # Scrape between specific h1 headers
                 yield scrapy.Request(url = url, callback = self.scrape_category_page_header1)
+            if url.endswith("Philosophy_and_religion"):
+                # Scrape everything
+                yield scrapy.Request(url = url, callback = self.scrape_category_page_generic)
 
     def scrape_category_page_header2(self, response):
 
@@ -178,6 +182,58 @@ class WikiEssentials_L5(scrapy.Spider):
             # If found businesspeople, break
             if found_business_and_economics:
                 break
+
+    def scrape_category_page_generic(self, response):
+
+        """Scrape a category page and metadata"""
+
+        content = response.css("#mw-content-text")
+        headers = content.css("h2")
+
+        # Construct the super category
+        parent_cat = response.url.replace("https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/", "")
+
+        # If does not exist, make
+        if not os.path.exists(os.path.join(DIR, parent_cat)):
+            os.mkdir(os.path.join(DIR, parent_cat))
+
+        # Retrieve category names
+        subcats = [header.css("h2 span::text").get() for header in headers]
+
+        # For each header, do
+        for i, header in enumerate(headers):
+            # If contents, then skip
+            if header.css("h2 span").get() is None: continue
+            # Else get subcategory for current and next header
+            header_current = subcats[i]
+            header_next = subcats[i+1] if i < (len(subcats)-1) else None
+
+            # Find <div> tags between the two sub categories
+            if header_next is not None:
+                div_siblings = content.xpath("//*[preceding-sibling::h2[span[text() = '{}']] and following-sibling::h2[span[text() = '{}']]]".format(header_current, header_next))
+            else:
+                # Find <div> tags between the last sub category and the navigation box
+                div_siblings = content.xpath("//*[preceding-sibling::h2[span[text() = '{}']] and following-sibling::div[@class='navbox']]".format(header_current))
+
+            # Remake name
+            subcategory = re.sub(r'\(.*\)', '', header_current).strip().replace(" ", "_")
+
+            # Make sub category dir if not exists
+            subcat_dir = os.path.join(DIR, parent_cat, subcategory)
+            if not os.path.exists(subcat_dir):
+                os.mkdir(subcat_dir)
+
+            # Find urls
+            subsection_urls = div_siblings.css("a::attr(href)").getall()
+            # If empty, continue
+            if len(subsection_urls) == 0: continue
+            # For each page, retrieve and save
+            for ref in subsection_urls:
+                if good_url(ref):
+                    # To scrape_page
+                    save_file = ref.strip("/wiki/") + ".html"
+                    page_url = "https://en.wikipedia.org" + ref
+                    yield scrapy.Request(page_url, callback=self.scrape_page, meta={'file_name':os.path.join(subcat_dir,save_file)})
 
     def scrape_page(self, response):
 

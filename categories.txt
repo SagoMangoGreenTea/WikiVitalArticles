@@ -12,15 +12,15 @@ Other
 	Other/Society_and_social_sciences	[==>]	819
 	Other/Mathematics	[==>]	298
 	Other/Everyday_life	[==>]	483
+	Other/Philosophy	[==>]	99
 	Other/Physical_sciences	[==>]	1100
 	Other/Biology_and_health_sciences	[==>]	1470
 	Other/Geography	[==>]	1197
-Philosophy
-	Philosophy/Abrahamic_religions	[==>]	73
-	Philosophy/Philosophy	[==>]	99
-	Philosophy/Eastern_religions	[==>]	49
-	Philosophy/Religious_figures	[==>]	125
-	Philosophy/Other_religions	[==>]	30
-	Philosophy/Religion_and_spirituality	[==>]	84
+Religion
+	Religion/Abrahamic_religions	[==>]	73
+	Religion/Eastern_religions	[==>]	49
+	Religion/Religious_figures	[==>]	125
+	Religion/Other_religions	[==>]	30
+	Religion/Religion_and_spirituality	[==>]	84
 Business_and_economics
 	Business_and_economics/business_and_economics	[==>]	548
