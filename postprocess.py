@@ -17,6 +17,13 @@ OUT_FILE = "WikiEssentials_L4.txt"
 
 # Utility functions
 
+# Remove everything between parentheses
+def clear_parentheses(string):
+
+    """Remove everything between parentheses"""
+
+    return(re.sub(r'\(.*\)', '', string))
+
 # Function from: https://github.com/amirouche/sensimark
 def extract_paragraphs(element):
 
@@ -60,7 +67,7 @@ def get_children(xml):
 
     return [e for e in xml.iterchildren() if not isinstance(e, html.HtmlComment)]
 
-def process_file(input_file, verbose = False):
+def process_file(input_file, clean_string = False, verbose = False):
 
     """Read an input (html) file from disk and process to paragraph-size chunks"""
 
@@ -76,14 +83,20 @@ def process_file(input_file, verbose = False):
     paragraphs = segmenter.process(paragraphs_from_html)
 
     paragraphs_new = []
-    for paragraph in paragraphs:
+    for k, paragraph in enumerate(paragraphs):
         paragraph_new = []
         for sentence in paragraph:
             sentence_new = []
             for token in sentence:
                 sentence_new.append(token.spacing + token.value)
             # Join
-            sentence_new_joined = re.sub(r'\[[0-9]\]', '', "".join(sentence_new))
+            sentence_new_joined = "".join(sentence_new)
+            # Clean
+            if clean_string:
+                # Remove citations
+                sentence_new_joined = re.sub(r'\[[0-9]{1,3}\]', '', sentence_new_joined)
+                # Remove anything between round brackets
+                sentence_new_joined = re.sub(r'\(.*\)', '', sentence_new_joined)
             if not sentence_new_joined.endswith("Wikipedia") and len(sentence_new_joined.split(" ")) > MIN_SENTENCE_TOKENS: paragraph_new.append(sentence_new_joined)
         # Paragraph must be > 5
         if len(" ".join(paragraph_new).split(" ")) > MIN_PARAGRAPH_TOKENS: paragraphs_new.append("".join(paragraph_new))
@@ -111,11 +124,15 @@ if __name__ == "__main__":
     argparser.add_argument('-v', "--verbose",
                            help="Print paragraph lengths, s paragraph sample and number of paragraphs per wikipedia article to the terminal",
                            required=False, default = False, type = bool)
+    argparser.add_argument('-c', "--clean_string",
+                           help="Does some basic preprocessing (e.g. remove special characters and remove anything between parentheses)",
+                           required=False, default = False, type = bool)
 
     # Retrieve arguments passed by user
     args = argparser.parse_args()
     mp = args.max_paragraphs
     verbose = args.verbose
+    clean_string = args.clean_string
 
     # Check if data exists
     assert os.path.exists("data"), "Data not found. Run the scraper first (see README)"
@@ -135,7 +152,7 @@ if __name__ == "__main__":
             # Cat
             print(" Handling article: {} -- {}% complete".format(WikiArticle, round((k / n) * 100, 2)))
             # Process article
-            paragraphs, label = process_file(WikiArticle, verbose = verbose)
+            paragraphs, label = process_file(WikiArticle, clean_string=clean_string, verbose = verbose)
             # Write
             for i, paragraph in enumerate(paragraphs):
                 outFile.write("{}\t{}\t{}\n".format("DOC" + str(docnr), label, paragraph))
