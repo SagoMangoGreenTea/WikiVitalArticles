@@ -20,7 +20,7 @@ Execute the following in a terminal:
 scrapy crawl WL4
 ```
 
-If you also want the expanded sections for businesspeople and business & economics from level 5, then execute:
+If you also want the expanded sections for the history and business & economics sections from level 5, then execute:
 
 ```python
 scrapy crawl WL5
