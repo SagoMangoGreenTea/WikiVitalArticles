@@ -43,9 +43,8 @@ class WikiEssentials_L5(scrapy.Spider):
 
         """Start scraping here"""
 
-        urls = ["https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/People/Miscellaneous",
-                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Society_and_social_sciences",
-                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Philosophy_and_religion"]
+        urls = ["https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Society_and_social_sciences",
+                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/History"]
 
         # Yield
         for url in urls:
@@ -55,7 +54,7 @@ class WikiEssentials_L5(scrapy.Spider):
             if url.endswith("sciences"):
                 # Scrape between specific h1 headers
                 yield scrapy.Request(url = url, callback = self.scrape_category_page_header1)
-            if url.endswith("Philosophy_and_religion"):
+            if url.endswith("History"):
                 # Scrape everything
                 yield scrapy.Request(url = url, callback = self.scrape_category_page_generic)
 
