@@ -2,6 +2,8 @@
 
 This is a scrapy project containing code used to download and post-process [Wikipedia vital pages](https://en.wikipedia.org/wiki/Wikipedia:Vital_articles). Currently supports downloading [Level 4](https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/4) only but code could easily be adapted to include other levels.
 
+The postprocessing script is adapted from the [sensimark](https://github.com/amirouche/sensimark) project by [amirouche](https://github.com/amirouche/sensimark/commits?author=amirouche).
+
 ## Installing prerequisites
 
 Execute
