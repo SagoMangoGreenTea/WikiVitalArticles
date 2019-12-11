@@ -97,6 +97,8 @@ def process_file(input_file, clean_string = False, verbose = False):
                 sentence_new_joined = re.sub(r'\[[0-9]{1,3}\]', '', sentence_new_joined)
                 # Remove anything between round brackets
                 sentence_new_joined = re.sub(r'\(.*\)', '', sentence_new_joined)
+                # Remove anything between square brackets
+                sentence_new_joined = re.sub(r'\[.*\]', '', sentence_new_joined)
             if not sentence_new_joined.endswith("Wikipedia") and len(sentence_new_joined.split(" ")) > MIN_SENTENCE_TOKENS: paragraph_new.append(sentence_new_joined)
         # Paragraph must be > 5
         if len(" ".join(paragraph_new).split(" ")) > MIN_PARAGRAPH_TOKENS: paragraphs_new.append("".join(paragraph_new))
@@ -122,10 +124,10 @@ if __name__ == "__main__":
                            help="Maximum number of paragraphs to process for an article",
                            required=False, type = int)
     argparser.add_argument('-v', "--verbose",
-                           help="Print paragraph lengths, s paragraph sample and number of paragraphs per wikipedia article to the terminal",
+                           help="Boolean (defaults to False). Print paragraph lengths, s paragraph sample and number of paragraphs per wikipedia article to the terminal",
                            required=False, default = False, type = bool)
     argparser.add_argument('-c', "--clean_string",
-                           help="Does some basic preprocessing (e.g. remove special characters and remove anything between parentheses)",
+                           help="Boolean (defaults to False). Does some basic preprocessing (e.g. remove special characters and remove anything between parentheses)",
                            required=False, default = False, type = bool)
 
     # Retrieve arguments passed by user
@@ -144,6 +146,9 @@ if __name__ == "__main__":
     #stop = 0
     with Path(OUT_FILE).open('w') as outFile:
 
+        # Headers
+        outFile.write("document_id\toutcome_label\tparagraph_id\tparagraph_text\n")
+
         all_articles = io.glob("./*/*/*")
         n = len(all_articles)
         docnr = 1
@@ -155,7 +160,7 @@ if __name__ == "__main__":
             paragraphs, label = process_file(WikiArticle, clean_string=clean_string, verbose = verbose)
             # Write
             for i, paragraph in enumerate(paragraphs):
-                outFile.write("{}\t{}\t{}\n".format("DOC" + str(docnr), label, paragraph))
+                outFile.write("{}\t{}\t{}\t{}\n".format("DOC" + str(docnr), label, i, paragraph))
                 if mp is not None:
                     if i == mp:
                         break
