@@ -3,4 +3,3 @@ path
 glob
 syntok
 lxml
-*.pyc
