@@ -3,6 +3,7 @@
 import scrapy
 import os
 import re
+import urllib.parse
 
 # Directory for the pages
 DIR = "data_L5"
@@ -17,8 +18,8 @@ class WikiEssentials_L5(scrapy.Spider):
 
         """Start scraping here"""
 
-        urls = ["https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Biology_and_health_sciences/Biology",
-                "https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/5/Biology_and_health_sciences/Animals"]
+        with open('L5_links.txt') as file:
+            urls = file.readlines()
 
         # Yield
         for url in urls:
@@ -35,7 +36,7 @@ class WikiEssentials_L5(scrapy.Spider):
 
         for href in links:
             if href.startswith('/wiki/') and ':' not in href:
-                entity = href.split('/wiki/')[-1]
+                entity = urllib.parse.unquote(href.split('/wiki/')[-1])
                 entities.add(entity)
 
         with open(out_file, 'w', encoding='utf-8') as file:
